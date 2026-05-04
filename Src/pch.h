@@ -33,4 +33,5 @@ static HMODULE gameBase = GetModuleHandle("game.dll");
 extern bool developerMode;
 extern bool disableWarnings;
 extern bool isUjAPI;
+extern std::string version;
 #endif

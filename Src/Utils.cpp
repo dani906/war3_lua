@@ -68,4 +68,26 @@ namespace Utils {
 
 		std::cout << buffer;
 	}
+
+	std::string GetDllVersion() {
+		char path[MAX_PATH];
+		GetModuleFileNameA(GetModuleHandleA("war3_lua.dll"), path, MAX_PATH);
+
+		DWORD dummy;
+		DWORD size = GetFileVersionInfoSizeA(path, &dummy);
+		if (size == 0) return "unknown";
+
+		std::vector<BYTE> data(size);
+		if (!GetFileVersionInfoA(path, 0, size, data.data())) return "unknown";
+
+		VS_FIXEDFILEINFO* info = nullptr;
+		UINT len = 0;
+		if (!VerQueryValueA(data.data(), "\\", (void**)&info, &len)) return "unknown";
+
+		return std::to_string(HIWORD(info->dwFileVersionMS)) + "." +
+			std::to_string(LOWORD(info->dwFileVersionMS)) + "." +
+			std::to_string(HIWORD(info->dwFileVersionLS)) + "." +
+			std::to_string(LOWORD(info->dwFileVersionLS));
+	}
+
 }

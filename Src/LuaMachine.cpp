@@ -1,11 +1,12 @@
 #include "pch.h"
-#include "LuaMachine.h"
-#include "JassMachine.h"
 #include "EasyStormLib/EasyStormLib.h"
 #include "JassNatives.h"
-#include "LuaHooks.h"
-#include "LuaFunctions.h"
+#include "JassMachine.h"
 #include "Logger.h"
+#include "LuaFunctions.h"
+#include "LuaHooks.h"
+#include "LuaMachine.h"
+#include "Warcraft3Types.h"
 
 namespace LuaMachine {
 	lua_State* mainState = NULL;
@@ -189,23 +190,31 @@ namespace LuaMachine {
 	int GetUserdataByHandle(lua_State* l, DWORD handle, LPCSTR tname) {
 		if (!handle) {
 			lua_pushnil(l);
-
 			return 1;
 		}
 
-		UINT key = (UINT)Warcraft::ConvertHandle(handle);
-		if (key) {
-			GetGlobalTable(l, "_LUA_WARCRAFT_HANDLES", false, false);
-		}
-		else {
+		UINT key;
+		if (Warcraft3Types::IsChild("agentdatafield", tname) || Warcraft3Types::IsChild("mappedtype", tname)) {
+			// Do not treat these fields as integer based fields like other ConvertXYZ-generated fields, as Warcraft::ConvertHandle crashes on that!
+			// agentdatafields are real handles!
 			GetGlobalTable(l, std::string("_LUA_CONST_").append(tname).data(), false, false);
 			key = handle;
 		}
+		else {
+			key = (UINT)Warcraft::ConvertHandle(handle);
+			if (key) {
+				GetGlobalTable(l, "_LUA_WARCRAFT_HANDLES", false, false);
+			}
+			else {
+				GetGlobalTable(l, std::string("_LUA_CONST_").append(tname).data(), false, false);
+				key = handle;
+			}
+		}
+
 		lua_rawgeti(l, -1, key);
 
 		if (luaL_testudata(l, -1, tname)) {
 			lua_remove(l, -2);
-
 			return 1;
 		}
 		else if (lua_isnil(l, -1)) {
@@ -217,7 +226,6 @@ namespace LuaMachine {
 		}
 
 		luaL_setmetatable(l, tname);
-
 		return 1;
 	}
 

@@ -1,151 +1,47 @@
 #include "pch.h"
-#include "LuaFunctions.h"
-#include "JassNatives.h"
-#include "LuaMachine.h"
-#include "JassMachine.h"
 #include "EasyStormLib/EasyStormLib.h"
+#include "JassNatives.h"
+#include "JassMachine.h"
+#include "LuaFunctions.h"
+#include "LuaMachine.h"
+#include "Warcraft3Types.h"
 
 #define lua_registerJassNative(L, n, c, f) (lua_pushstring(L, (n)), lua_pushinteger(L, (DWORD)(c)), lua_pushcclosure(L, (f), 2), lua_setglobal(L, (n)))
 #define lua_pushJassNative(L, n, c, f) (lua_pushstring(L, (n)), lua_pushinteger(L, (DWORD)(c)), lua_pushcclosure(L, (f), 2))
 
-std::map<std::string, bool> destroyers = {
-	{"DestroyTimer", true},
-	{"DestroyGroup", true},
-	{"DestroyForce", true},
-	{"DestroyTrigger", true},
-	{"DestroyCondition", true},
-	{"DestroyFiler", true},
-	{"DestroyBoolExpr", true},
-	{"DestroyFogModifier", true},
-	{"DialogDestroy", true},
-	{"DestroyUnitPool", true},
-	{"DestroyItemPool", true},
-	{"DestroyTextTag", true},
-	{"DestroyQuest", true},
-	{"DestroyDefeatCondition", true},
-	{"DestroyTimerDialog", true},
-	{"DestroyLeaderboard", true},
-	{"DestroyMultiboard", true},
-	{"DestroyEffect", true},
-	{"DestroyLightning", true},
-	{"DestroyImage", true},
-	{"DestroyUbersplat", true},
-
-	{"RemoveRect", true},
-	{"RemoveRegion", true},
-	{"RemoveLocation", true},
-	{"RemoveDestructable", true},
-	{"RemoveItem", true},
-	{"RemoveUnit", true},
-	{"RemoveWeatherEffect", true}
-};
-
-std::map<std::string, std::string> inheritance = {
-	{ "agent"			   , "handle" },
-	{ "event"              , "agent" },
-	{ "player"             , "agent" },
-	{ "widget"             , "agent" },
-	{ "unit"               , "widget" },
-	{ "destructable"       , "widget" },
-	{ "item"               , "widget" },
-	{ "ability"            , "agent" },
-	{ "buff"               , "ability" },
-	{ "force"              , "agent" },
-	{ "group"              , "agent" },
-	{ "trigger"            , "agent" },
-	{ "triggercondition"   , "agent" },
-	{ "triggeraction"      , "handle" },
-	{ "timer"              , "agent" },
-	{ "location"           , "agent" },
-	{ "region"             , "agent" },
-	{ "rect"               , "agent" },
-	{ "boolexpr"           , "agent" },
-	{ "sound"              , "agent" },
-	{ "conditionfunc"      , "boolexpr" },
-	{ "filterfunc"         , "boolexpr" },
-	{ "unitpool"           , "handle" },
-	{ "itempool"           , "handle" },
-	{ "race"               , "handle" },
-	{ "alliancetype"       , "handle" },
-	{ "racepreference"     , "handle" },
-	{ "gamestate"          , "handle" },
-	{ "igamestate"         , "gamestate" },
-	{ "fgamestate"         , "gamestate" },
-	{ "playerstate"        , "handle" },
-	{ "playerscore"        , "handle" },
-	{ "playergameresult"   , "handle" },
-	{ "unitstate"          , "handle" },
-	{ "aidifficulty"       , "handle" },
-	{ "eventid"            , "handle" },
-	{ "gameevent"          , "eventid" },
-	{ "playerevent"        , "eventid" },
-	{ "playerunitevent"    , "eventid" },
-	{ "unitevent"          , "eventid" },
-	{ "limitop"            , "eventid" },
-	{ "widgetevent"        , "eventid" },
-	{ "dialogevent"        , "eventid" },
-	{ "unittype"           , "handle" },
-	{ "gamespeed"          , "handle" },
-	{ "gamedifficulty"     , "handle" },
-	{ "gametype"           , "handle" },
-	{ "mapflag"            , "handle" },
-	{ "mapvisibility"      , "handle" },
-	{ "mapsetting"         , "handle" },
-	{ "mapdensity"         , "handle" },
-	{ "mapcontrol"         , "handle" },
-	{ "playerslotstate"    , "handle" },
-	{ "volumegroup"        , "handle" },
-	{ "camerafield"        , "handle" },
-	{ "camerasetup"        , "handle" },
-	{ "playercolor"        , "handle" },
-	{ "placement"          , "handle" },
-	{ "startlocprio"       , "handle" },
-	{ "raritycontrol"      , "handle" },
-	{ "blendmode"          , "handle" },
-	{ "texmapflags"        , "handle" },
-	{ "effect"             , "agent" },
-	{ "effecttype"         , "handle" },
-	{ "weathereffect"      , "handle" },
-	{ "terraindeformation" , "handle" },
-	{ "fogstate"           , "handle" },
-	{ "fogmodifier"        , "agent" },
-	{ "dialog"             , "agent" },
-	{ "button"             , "agent" },
-	{ "quest"              , "agent" },
-	{ "questitem"          , "agent" },
-	{ "defeatcondition"    , "agent" },
-	{ "timerdialog"        , "agent" },
-	{ "leaderboard"        , "agent" },
-	{ "multiboard"         , "agent" },
-	{ "multiboarditem"     , "agent" },
-	{ "trackable"          , "agent" },
-	{ "gamecache"          , "agent" },
-	{ "version"            , "handle" },
-	{ "itemtype"           , "handle" },
-	{ "texttag"            , "handle" },
-	{ "attacktype"         , "handle" },
-	{ "damagetype"         , "handle" },
-	{ "weapontype"         , "handle" },
-	{ "soundtype"          , "handle" },
-	{ "lightning"          , "handle" },
-	{ "pathingtype"        , "handle" },
-	{ "image"              , "handle" },
-	{ "ubersplat"          , "handle" },
-	{ "hashtable"          , "agent" }
-};
+//std::map<std::string, bool> destroyers = {
+//	{"DestroyTimer", true},
+//	{"DestroyGroup", true},
+//	{"DestroyForce", true},
+//	{"DestroyTrigger", true},
+//	{"DestroyCondition", true},
+//	{"DestroyFiler", true},
+//	{"DestroyBoolExpr", true},
+//	{"DestroyFogModifier", true},
+//	{"DialogDestroy", true},
+//	{"DestroyUnitPool", true},
+//	{"DestroyItemPool", true},
+//	{"DestroyTextTag", true},
+//	{"DestroyQuest", true},
+//	{"DestroyDefeatCondition", true},
+//	{"DestroyTimerDialog", true},
+//	{"DestroyLeaderboard", true},
+//	{"DestroyMultiboard", true},
+//	{"DestroyEffect", true},
+//	{"DestroyLightning", true},
+//	{"DestroyImage", true},
+//	{"DestroyUbersplat", true},
+//
+//	{"RemoveRect", true},
+//	{"RemoveRegion", true},
+//	{"RemoveLocation", true},
+//	{"RemoveDestructable", true},
+//	{"RemoveItem", true},
+//	{"RemoveUnit", true},
+//	{"RemoveWeatherEffect", true}
+//};
 
 namespace LuaFunctions {
-	bool IsChild(const std::string& maintype, std::string childtype) {
-		do {
-			if (maintype == childtype) {
-				return true;
-			}
-
-			childtype = inheritance[childtype];
-		} while (!childtype.empty());
-
-		return false;
-	}
 
 	//--------------------------------------------------------
 	// JassNatives
@@ -235,7 +131,7 @@ namespace LuaFunctions {
 
 					std::string metatype = lua_tostring(l, -1);
 
-					if (!IsChild(type, metatype)) {
+					if (!Warcraft3Types::IsChild(type, metatype)) {
 						if (metatype == "handle") {
 							if (developerMode && !disableWarnings) {
 								luaL_where(l, 1);
@@ -255,6 +151,12 @@ namespace LuaFunctions {
 					if (luaL_testudata(l, i, "code")) {
 						return luaL_typeerror(l, i, type.data());
 					}
+
+					//Logger::Log(Utils::format(
+					//	"Param #%d: type=%s, rawvalue=0x%x\n",
+					//	i, type.data(),
+					//	*(DWORD*)lua_touserdata(l, i)
+					//).c_str(), Logger::LEVEL::LOG_INFO);
 
 					params[i - 1] = *(DWORD*)lua_touserdata(l, i);
 				}
@@ -303,6 +205,9 @@ namespace LuaFunctions {
 			}
 		}
 		else {
+			
+			//Logger::Log(Utils::format("GetUserdataByHandle: handle=0x%x type=%s\n",
+			//	result, return_type.data()).c_str(), Logger::LEVEL::LOG_INFO);
 			LuaMachine::GetUserdataByHandle(l, result, return_type.data());
 		}
 
@@ -417,17 +322,23 @@ namespace LuaFunctions {
 
 	int lua_handletostring(lua_State* l) {
 		luaL_getmetafield(l, 1, "__name");
+		std::string tname = lua_tostring(l, 2);  // __name holen bevor wir lua_tostring(l,2) nochmal nutzen
 
 		UINT handle = *(UINT*)lua_touserdata(l, 1);
 
-		std::string string = !developerMode ? 
-							 Utils::format("%s: %08X", lua_tostring(l, 2), handle) : 
-							 Utils::format("%s: %08X | %08X", lua_tostring(l, 2), handle, Warcraft::ConvertHandle(handle));
+		std::string string;
+		if (!developerMode || Warcraft3Types::IsChild("agentdatafield", tname) || Warcraft3Types::IsChild("mappedtype", tname)) {
+			// unitfields, abilityfields, attachmenttypes, etc.
+			string = Utils::format("%s: %08X", tname.data(), handle);
+		}
+		else {
+			string = Utils::format("%s: %08X | %08X", tname.data(), handle, Warcraft::ConvertHandle(handle));
+		}
 
 		lua_pop(l, 1);
-	
+
 		lua_pushstring(l, string.data());
-	
+
 		return 1;
 	}
 
@@ -469,7 +380,7 @@ namespace LuaFunctions {
 
 						const std::string& firstArgType = native.second.GetParams()[0];
 						
-						if (IsChild(firstArgType, type.first)) {
+						if (Warcraft3Types::IsChild(firstArgType, type.first)) {
 							lua_pushJassNative(l, native.first.data(), &native.second, lua_invokeNative);
 							lua_setfield(l, -2, native.first.data());
 						}
@@ -748,6 +659,12 @@ namespace LuaFunctions {
 		return 1;
 	}
 
+	int lua_GetWar3LuaVersion(lua_State* l) {
+		lua_pushstring(l, version.c_str());
+
+		return 1;
+	}
+
 	void lua_openExternalFunctions(lua_State* l) {
 		lua_register(l, "IdToString", lua_IdToString);
 		lua_register(l, "StringToId", lua_StringToId);
@@ -757,5 +674,6 @@ namespace LuaFunctions {
 
 		lua_register(l, "IsDevMode", lua_IsDevMode);
 		lua_register(l, "IsUjAPI", lua_IsUjAPI);
+		lua_register(l, "GetWar3LuaVersion", lua_GetWar3LuaVersion);
 	}
 }

@@ -159,6 +159,9 @@
     <ClCompile Include="Src\Utils.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Warcraft3Types.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Hooks.h">
@@ -291,6 +294,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Warcraft3Types.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

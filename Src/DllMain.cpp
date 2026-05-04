@@ -4,10 +4,12 @@
 #include "Offsets.h"
 #include "Hooks.h"
 #include "Logger.h"
+#include "Utils.h"
 
 bool developerMode = false;
 bool disableWarnings = false;
 bool isUjAPI = false;
+std::string version = Utils::GetDllVersion();
 
 bool StartUp();
 

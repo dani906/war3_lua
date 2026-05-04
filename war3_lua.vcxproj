@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>D:\Warcraft III\</OutDir>
+    <OutDir>D:\Wc3 Projekte\war3_lua\out</OutDir>
     <IntDir>$(SolutionDir)Build\obj\</IntDir>
     <TargetExt>.dll</TargetExt>
     <SourcePath>$(SolutionDir)3rd\lua;$(SourcePath)</SourcePath>
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>D:\Warcraft III\</OutDir>
+    <OutDir>D:\Wc3 Projekte\war3_lua\out</OutDir>
     <IntDir>$(SolutionDir)Build\obj\</IntDir>
     <TargetExt>.dll</TargetExt>
     <SourcePath>$(SolutionDir)3rd\lua;$(SourcePath)</SourcePath>
@@ -416,6 +416,7 @@
     </ClCompile>
     <ClCompile Include="Src\Utils.cpp" />
     <ClCompile Include="Src\Warcraft.cpp" />
+    <ClCompile Include="Src\Warcraft3Types.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd\lua\lapi.h" />
@@ -462,6 +463,7 @@
     <ClInclude Include="Src\pch.h" />
     <ClInclude Include="Src\Utils.h" />
     <ClInclude Include="Src\Warcraft.h" />
+    <ClInclude Include="Src\Warcraft3Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
