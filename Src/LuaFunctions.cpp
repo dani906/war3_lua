@@ -9,38 +9,6 @@
 #define lua_registerJassNative(L, n, c, f) (lua_pushstring(L, (n)), lua_pushinteger(L, (DWORD)(c)), lua_pushcclosure(L, (f), 2), lua_setglobal(L, (n)))
 #define lua_pushJassNative(L, n, c, f) (lua_pushstring(L, (n)), lua_pushinteger(L, (DWORD)(c)), lua_pushcclosure(L, (f), 2))
 
-//std::map<std::string, bool> destroyers = {
-//	{"DestroyTimer", true},
-//	{"DestroyGroup", true},
-//	{"DestroyForce", true},
-//	{"DestroyTrigger", true},
-//	{"DestroyCondition", true},
-//	{"DestroyFiler", true},
-//	{"DestroyBoolExpr", true},
-//	{"DestroyFogModifier", true},
-//	{"DialogDestroy", true},
-//	{"DestroyUnitPool", true},
-//	{"DestroyItemPool", true},
-//	{"DestroyTextTag", true},
-//	{"DestroyQuest", true},
-//	{"DestroyDefeatCondition", true},
-//	{"DestroyTimerDialog", true},
-//	{"DestroyLeaderboard", true},
-//	{"DestroyMultiboard", true},
-//	{"DestroyEffect", true},
-//	{"DestroyLightning", true},
-//	{"DestroyImage", true},
-//	{"DestroyUbersplat", true},
-//
-//	{"RemoveRect", true},
-//	{"RemoveRegion", true},
-//	{"RemoveLocation", true},
-//	{"RemoveDestructable", true},
-//	{"RemoveItem", true},
-//	{"RemoveUnit", true},
-//	{"RemoveWeatherEffect", true}
-//};
-
 namespace LuaFunctions {
 
 	//--------------------------------------------------------
@@ -152,12 +120,6 @@ namespace LuaFunctions {
 						return luaL_typeerror(l, i, type.data());
 					}
 
-					//Logger::Log(Utils::format(
-					//	"Param #%d: type=%s, rawvalue=0x%x\n",
-					//	i, type.data(),
-					//	*(DWORD*)lua_touserdata(l, i)
-					//).c_str(), Logger::LEVEL::LOG_INFO);
-
 					params[i - 1] = *(DWORD*)lua_touserdata(l, i);
 				}
 				else {
@@ -205,9 +167,6 @@ namespace LuaFunctions {
 			}
 		}
 		else {
-			
-			//Logger::Log(Utils::format("GetUserdataByHandle: handle=0x%x type=%s\n",
-			//	result, return_type.data()).c_str(), Logger::LEVEL::LOG_INFO);
 			LuaMachine::GetUserdataByHandle(l, result, return_type.data());
 		}
 
@@ -322,7 +281,7 @@ namespace LuaFunctions {
 
 	int lua_handletostring(lua_State* l) {
 		luaL_getmetafield(l, 1, "__name");
-		std::string tname = lua_tostring(l, 2);  // __name holen bevor wir lua_tostring(l,2) nochmal nutzen
+		std::string tname = lua_tostring(l, 2);
 
 		UINT handle = *(UINT*)lua_touserdata(l, 1);
 
@@ -548,28 +507,6 @@ namespace LuaFunctions {
 	}
 
 	void lua_openJassVariables(lua_State* l) {
-		/*JassMachine::PJASS_INSTANCE jvm = JassMachine::GetJassMachine();
-		if (!jvm) {
-			return;
-		}
-
-		JassMachine::PSCRIPT_DATA_TABLE scripts = jvm->script_table;
-		if (!scripts) {
-			return;
-		}
-
-		JassMachine::PJASS_VARIABLE var;
-		for (var = scripts->variable; (int)var > NULL; var = var->next) {
-			LuaMachine::GetUserdataByHandle(l, (DWORD)var, "pJassVariable");
-			lua_setglobal(l, var->name);
-		}
-
-		return;*/
-
-		//lua_newtable(l);
-		//lua_pushvalue(l, -1);
-		//lua_setglobal(l, "jass");
-
 		lua_getglobal(l, "_G");
 
 		lua_newtable(l);
@@ -581,9 +518,7 @@ namespace LuaFunctions {
 		lua_setfield(l, -2, "__metatable");
 
 		lua_setmetatable(l, -2);
-		lua_pop(l, 1);
-
-		
+		lua_pop(l, 1);		
 	}
 
 	//--------------------------------------------------------
